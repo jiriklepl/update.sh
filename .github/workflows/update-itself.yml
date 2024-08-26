@@ -1,0 +1,22 @@
+name: Update update.sh
+
+on: [push]
+jobs:
+  Update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set remote
+        shell: bash
+        working-directory: ${{github.workspace}}
+        run: |
+          git checkout master
+          git fetch origin
+          git pull origin master
+          git branch -d HEAD &>/dev/null || git tag -d HEAD || : # Make sure no branch is named HEAD
+
+      - name: Run update.sh
+        shell: bash
+        working-directory: ${{github.workspace}}
+        run: ./update.sh
